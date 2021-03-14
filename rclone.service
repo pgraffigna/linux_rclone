@@ -1,0 +1,29 @@
+[Unit]
+Description=Servicio RClone
+After=network-online.target
+
+[Service]
+Type=notify
+KillMode=none
+RestartSec=5
+ExecStart=/usr/bin/rclone mount gdrive: /home/quentin/google-drive \
+	--config=/home/quentin/.config/rclone/rclone.conf \
+        --allow-other \
+        --cache-tmp-upload-path=/tmp/rclone/upload \
+        --cache-chunk-path=/tmp/rclone/chunks \
+        --cache-workers=4 \
+        --cache-writes \
+        --cache-dir=/tmp/rclone/vfs \
+        --cache-db-path=/tmp/rclone/db \
+        --no-modtime \
+        --drive-use-trash \
+        --stats=0 \
+        --checkers=8 \
+        --dir-cache-time=60m 
+ExecStop=/bin/fusermount -u /home/quentin/google-drive
+Restart=on-failure
+User=quentin
+Group=quentin
+
+[Install]
+WantedBy=multi-user.target
